@@ -5,12 +5,8 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+      imports: [RouterTestingModule],
+      declarations: [AppComponent],
     }).compileComponents();
   });
 
@@ -30,6 +26,22 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, jest-testing');
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Hello, jest-testing'
+    );
+  });
+
+  it('object assignment', () => {
+    const data: any = { one: 1 };
+    data['two'] = 2;
+    expect(data).toEqual({ one: 1, two: 2 });
+  });
+
+  it('compiling android goes as expected', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(() => app.compileAndroidCode()).toThrow(
+      /^you are using the wrong JDK!$/
+    );
   });
 });
