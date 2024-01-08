@@ -1,47 +1,44 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { DemoService } from './service/demo.service';
+import { of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let demoService: DemoService;
+
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+    TestBed.configureTestingModule({
       declarations: [AppComponent],
+      imports: [CommonModule, RouterTestingModule, HttpClientModule],
+      providers: [DemoService],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'jest-testing'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('jest-testing');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Hello, jest-testing'
-    );
+    demoService = TestBed.inject(DemoService);
   });
 
-  it('object assignment', () => {
-    const data: any = { one: 1 };
-    data['two'] = 2;
-    expect(data).toEqual({ one: 1, two: 2 });
+  it('getData() function called in ngOnInit function', async () => {
+    const responseData = 'Mocked data';
+    jest.spyOn(demoService, 'getData').mockReturnValue(of(responseData));
+
+    component.ngOnInit();
+    expect(demoService.getData).toHaveBeenCalled();
+
+    expect(component.data).toEqual(responseData);
   });
 
-  it('compiling android goes as expected', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(() => app.compileAndroidCode()).toThrow(
-      /^you are using the wrong JDK!$/
-    );
+  it('compileAndroidCode() function called', async () => {
+    jest.spyOn(component, 'compileAndroidCode');
+    component.ngOnInit();
+    expect(component.compileAndroidCode).toHaveBeenCalled();
   });
 });

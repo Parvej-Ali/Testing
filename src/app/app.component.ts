@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { of, take } from 'rxjs';
 import { DemoService } from './service/demo.service';
 
@@ -6,10 +6,24 @@ import { DemoService } from './service/demo.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'jest-testing';
+  public data: any;
+
+  constructor(private demoService: DemoService) {}
+
+  ngOnInit(): void {
+    this.demoService
+      .getData()
+      .pipe(take(1))
+      .subscribe((value) => {
+        console.log('Response : ', value);
+        this.data = value;
+      });
+    this.compileAndroidCode();
+  }
 
   public compileAndroidCode() {
-    throw new Error('you are using the wrong JDK!');
+    console.log('Android code compiled');
   }
 }
